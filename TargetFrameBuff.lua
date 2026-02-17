@@ -1,7 +1,7 @@
 
--- Title: TargetFrameBuff v0.5
--- Notes: Shows up to 16 Buffs & Debuffs on a Target
--- Author: lua@lumpn.de
+-- Title: TargetFrameBuff v0.6
+-- Notes: Shows up to 16 Buffs & Debuffs on a Target (Buffs above, Debuffs below)
+-- Author: lua@lumpn.de (modified)
 
 
 local lOriginal_TargetDebuffButton_Update = nil;
@@ -59,46 +59,50 @@ function TargetFrameBuff_Update()
 		end
 	end
 	
-	-- Position buffs depending on whether the targeted unit is friendly or not
-	if (UnitIsFriend("player", "target")) then
-		TargetFrameBuff1:ClearAllPoints();
-		TargetFrameBuff1:SetPoint("TOPLEFT", "TargetFrame", "BOTTOMLEFT", 5, 32);
-		TargetFrameDebuff1:ClearAllPoints();
-		TargetFrameDebuff1:SetPoint("TOPLEFT", "TargetFrameBuff"..TargetFrameBuff_Anchor(num_buff), "BOTTOMLEFT", 0, -2);
-	else
-		TargetFrameDebuff1:ClearAllPoints();
-		TargetFrameDebuff1:SetPoint("TOPLEFT", "TargetFrame", "BOTTOMLEFT", 5, 32);
-		TargetFrameBuff1:ClearAllPoints();
-		TargetFrameBuff1:SetPoint("TOPLEFT", "TargetFrameDebuff"..TargetFrameBuff_Anchor(num_debuff), "BOTTOMLEFT", 0, -2);
+	-- Position buffs above target frame
+	TargetFrameBuff1:ClearAllPoints();
+	TargetFrameBuff1:SetPoint("BOTTOMLEFT", "TargetFrame", "TOPLEFT", 5, -10);
+	
+	-- Position debuffs below target frame using default positioning (no gap)
+	-- Layout: 4-4-8 (three rows: 4 debuffs, 4 debuffs, 8 debuffs)
+	-- Debuff 1 uses default WoW positioning to avoid gap with target frame
+	-- TargetFrameDebuff1:ClearAllPoints();
+	-- TargetFrameDebuff1:SetPoint("TOPLEFT", "TargetFrame", "BOTTOMLEFT", 5, 0);
+	
+	-- Position remaining buttons in 4-4-8 layout
+	for i=2, TARGETFRAMEBUFF_MAX_TARGET_DEBUFFS do
+		button = getglobal("TargetFrameDebuff"..i);
+		if button then
+			button:ClearAllPoints();
+			if i == 5 then
+				-- Row 2: Start below button 1
+				button:SetPoint("TOPLEFT", "TargetFrameDebuff1", "BOTTOMLEFT", 0, -2);
+			elseif i == 9 then
+				-- Row 3: Start below button 5
+				button:SetPoint("TOPLEFT", "TargetFrameDebuff5", "BOTTOMLEFT", 0, -2);
+			else
+				-- Position horizontally relative to previous button
+				button:SetPoint("LEFT", "TargetFrameDebuff"..(i-1), "RIGHT", 3, 0);
+			end
+		end
 	end
 
-end
-
-
-function TargetFrameBuff_Anchor(num)
-	if (num > 5) then
-		return 6;
-	end
-	return 1;
 end
 
 
 function TargetFrameBuff_Restore()
-	TargetFrameDebuff6:ClearAllPoints();
-	TargetFrameDebuff6:SetPoint("TOPLEFT", "TargetFrameDebuff1", "BOTTOMLEFT", 0, -2);
-	TargetFrameDebuff7:ClearAllPoints();
-	TargetFrameDebuff7:SetPoint("LEFT", "TargetFrameDebuff6", "RIGHT", 3, 0);
-	TargetFrameDebuff11:ClearAllPoints();
-	TargetFrameDebuff11:SetPoint("LEFT", "TargetFrameDebuff10", "RIGHT", 3, 0);
-
 	-- Resize debuffs to full size
 	local button, debuffFrame;
 	for i=1, TARGETFRAMEBUFF_MAX_TARGET_DEBUFFS do
 		button = getglobal("TargetFrameDebuff"..i);
-		debuffFrame = getglobal("TargetFrameDebuff"..i.."Border");
-		button:SetWidth(21);
-		button:SetHeight(21);
-		debuffFrame:SetWidth(23);
-		debuffFrame:SetHeight(23);
+		if button then
+			debuffFrame = getglobal("TargetFrameDebuff"..i.."Border");
+			button:SetWidth(21);
+			button:SetHeight(21);
+			if debuffFrame then
+				debuffFrame:SetWidth(23);
+				debuffFrame:SetHeight(23);
+			end
+		end
 	end
 end

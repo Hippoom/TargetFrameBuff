@@ -13,9 +13,9 @@
 	<!-- 11 additional buff buttons (original code from FrameXML/TargetFrame.xml) -->
 	<Button name="TargetFrameBuff6" inherits="TargetBuffButtonTemplate" id="6" parent="TargetFrame">
 		<Anchors>
-			<Anchor point="TOPLEFT" relativeTo="TargetFrameBuff1" relativePoint="BOTTOMLEFT">
+			<Anchor point="BOTTOMLEFT" relativeTo="TargetFrameBuff1" relativePoint="TOPLEFT">
 				<Offset>
-					<AbsDimension x="0" y="-2"/>
+					<AbsDimension x="0" y="2"/>
 				</Offset>
 			</Anchor>
 		</Anchors>

@@ -1,8 +1,13 @@
 # TargetFrameBuff
 TargetFrameBuff allows you to view up to 16 buffs & debuffs on a target in the default UI.
-Mirror of https://wow.curseforge.com/projects/project-949
+
+**Layout:**
+- **Buffs**: 16 buffs displayed above the target frame (5 in first row, 11 in second row)
+- **Debuffs**: 16 debuffs displayed below the target frame in 4-4-8 layout (no gap)
 
 Supports 1.12.1, but will most likely work on any vanilla patch.
+
+Based on: https://wow.curseforge.com/projects/project-949
 
 ### Setup
 Rename TargetFrameBuff-master to TargetFrameBuff and drag it into your addon folder.
